@@ -6,9 +6,8 @@ import (
 	"path"
 )
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-
-	templ, err := template.ParseFiles(path.Join("views", "index.html"))
+func Login(w http.ResponseWriter, r *http.Request) {
+	templ, err := template.ParseFiles(path.Join("views/auth", "login.html"), path.Join("views/layout", "layout.html"))
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -17,7 +16,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := map[string]interface{}{
 
-		"title": "Home | Anonymous Message",
+		"title": "Login | Anonymous Message",
 	}
 
 	err = templ.Execute(w, data)

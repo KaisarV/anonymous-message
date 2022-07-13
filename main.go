@@ -18,7 +18,9 @@ func main() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", controller.HomeHandler)
+	router.HandleFunc("/", controller.Authenticate(controller.HomeHandler, 1))
+	router.HandleFunc("/login", controller.Login)
+
 	err := http.ListenAndServe(":8080", router)
 	log.Fatal(err)
 }

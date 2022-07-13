@@ -54,8 +54,11 @@ func resetUserToken(w http.ResponseWriter) {
 
 func Authenticate(next http.HandlerFunc, accessType int) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		isValidToken := validateUserToken(w, r, accessType)
+		isValidToken, userType := validateUserToken(w, r, accessType)
 		if !isValidToken {
+			if userType == -1 {
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+			}
 			SendUnAuthorizedResponse(w, "Unauthorized Response", 400)
 		} else {
 			next.ServeHTTP(w, r)
@@ -63,7 +66,7 @@ func Authenticate(next http.HandlerFunc, accessType int) http.HandlerFunc {
 	})
 }
 
-func validateUserToken(w http.ResponseWriter, r *http.Request, accessType int) bool {
+func validateUserToken(w http.ResponseWriter, r *http.Request, accessType int) (bool, int) {
 	isAccessTokenValid, id, name, userType := validateTokenFromCookies(r)
 	fmt.Print(id, name, userType, accessType, isAccessTokenValid)
 
@@ -71,10 +74,10 @@ func validateUserToken(w http.ResponseWriter, r *http.Request, accessType int) b
 		isUserValid := userType >= accessType
 		fmt.Print(isUserValid)
 		if isUserValid {
-			return true
+			return true, userType
 		}
 	}
-	return false
+	return false, userType
 }
 
 //Ambil dari cookies
