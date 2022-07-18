@@ -1,7 +1,11 @@
 {{ template "layout" .}} {{ define "main" }}
-<form action="">
-  <label for=""></label>
-  <input type="text" />
-  <input type="password" />
+<form action="/process" method="POST">
+  <label for="name"></label>
+  <input type="text" name="name" placeholder="Fill Username" required />
+  <br />
+  <label for="password"></label>
+  <input type="password" name="password" placeholder="Fill Password" required />
+
+  <button type="submit">Submit</button>
 </form>
 {{ end }}

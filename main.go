@@ -20,6 +20,10 @@ func main() {
 
 	router.HandleFunc("/", controller.Authenticate(controller.HomeHandler, 1))
 	router.HandleFunc("/login", controller.Login)
+	router.HandleFunc("/process", controller.ProcessLogin)
+
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static",
+		http.FileServer(http.Dir("assets"))))
 
 	err := http.ListenAndServe(":8080", router)
 	log.Fatal(err)
