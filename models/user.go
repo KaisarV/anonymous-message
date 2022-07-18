@@ -1,4 +1,4 @@
-package models
+package model
 
 type User struct {
 	Id       int
@@ -6,5 +6,6 @@ type User struct {
 	Username string
 	Email    string
 	Password string
-	Usertype string
+	Age      int
+	Usertype int
 }

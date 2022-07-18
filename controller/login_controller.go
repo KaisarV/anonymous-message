@@ -3,7 +3,10 @@ package controller
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
+	"ngl-link/config"
+	model "ngl-link/models"
 	"path"
 )
 
@@ -46,14 +49,36 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProcessLogin(w http.ResponseWriter, r *http.Request) {
+
+	db := config.Connect()
+
 	err := r.ParseForm()
 
 	if err != nil {
+		fmt.Println("Error")
 		return
 	}
 
-	fmt.Println(r.Form.Get("name"))
-	fmt.Println(r.Form.Get("password"))
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+
+	rows, err := db.Query("SELECT * FROM  users WHERE email = ? AND password = ?", email, password)
+
+	if err != nil {
+		fmt.Println("Error")
+		return
+	}
+
+	var user model.User
+	var users []model.User
+
+	for rows.Next() {
+		if err := rows.Scan(&user.Id, &user.Name, &user.Username, &user.Email, &user.Password, &user.Age, &user.Usertype); err != nil {
+			log.Print(err.Error())
+		} else {
+			users = append(users, user)
+		}
+	}
 
 	return
 }

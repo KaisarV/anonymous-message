@@ -1,11 +1,22 @@
 {{ template "layout" .}} {{ define "main" }}
-<form action="/process" method="POST">
-  <label for="name"></label>
-  <input type="text" name="name" placeholder="Fill Username" required />
-  <br />
-  <label for="password"></label>
-  <input type="password" name="password" placeholder="Fill Password" required />
+<div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form>
+        <h3>Login</h3>
 
-  <button type="submit">Submit</button>
+        <label for="username">Email</label>
+        <input type="text" placeholder="Email or Phone" id="email" name="email">
+
+        <label for="password">Password</label>
+        <input type="password" placeholder="Password" id="password" name="password">
+
+        <button>Log In</button>
+        <div class="social">
+          <div class="go"><i class="fab fa-google"></i>  Google</div>
+          <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
+        </div>
+    </form>
 </form>
 {{ end }}
