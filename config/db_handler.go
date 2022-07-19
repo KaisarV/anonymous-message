@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"ngl-link/utils"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func Connect() *sql.DB {

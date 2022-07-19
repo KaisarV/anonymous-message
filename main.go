@@ -21,6 +21,7 @@ func main() {
 	router.HandleFunc("/", controller.Authenticate(controller.HomeHandler, 1))
 	router.HandleFunc("/login", controller.Login)
 	router.HandleFunc("/process", controller.ProcessLogin)
+	router.HandleFunc("/logout", controller.Logout)
 
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static",
 		http.FileServer(http.Dir("assets"))))

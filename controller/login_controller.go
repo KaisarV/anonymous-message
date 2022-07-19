@@ -62,6 +62,11 @@ func ProcessLogin(w http.ResponseWriter, r *http.Request) {
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 
+	if email == "" && password == "" {
+		fmt.Println("Masukin username sama password")
+		return
+	}
+
 	rows, err := db.Query("SELECT * FROM  users WHERE email = ? AND password = ?", email, password)
 
 	if err != nil {
@@ -80,5 +85,27 @@ func ProcessLogin(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if len(users) == 1 {
+		generateToken(w, user.Id, user.Name, user.Username, user.Email, user.Usertype)
+	} else {
+		log.Print("Gabisa login cuy")
+	}
+
+	fmt.Println(users)
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	resetUserToken(w)
+
+	// var response model.UserResponse
+	// response.Status = 200
+	// response.Message = "Logout Success"
+
+	// w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(response)
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 	return
 }

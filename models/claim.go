@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"github.com/dgrijalva/jwt-go"
@@ -7,6 +7,8 @@ import (
 type Claims struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
-	UserType int    `json:"userType"`
+	Username string
+	Email    string
+	UserType int `json:"userType"`
 	jwt.StandardClaims
 }

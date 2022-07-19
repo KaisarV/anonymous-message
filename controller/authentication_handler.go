@@ -15,7 +15,7 @@ import (
 var jwtKey = []byte("Jksdgbfkd334dsj")
 var tokenName = "token"
 
-func generateToken(w http.ResponseWriter, id int, name string, userType int) {
+func generateToken(w http.ResponseWriter, id int, name string, username string, email string, userType int) {
 	timeout, _ := strconv.Atoi(utils.Getenv("TOKEN_MINUTE_LIFESPAN", "1"))
 
 	tokenExpiryTime := time.Now().Add(time.Duration(timeout) * time.Minute)
@@ -23,6 +23,8 @@ func generateToken(w http.ResponseWriter, id int, name string, userType int) {
 	claims := &model.Claims{
 		ID:       id,
 		Name:     name,
+		Username: username,
+		Email:    email,
 		UserType: userType,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: tokenExpiryTime.Unix(),
@@ -67,8 +69,8 @@ func Authenticate(next http.HandlerFunc, accessType int) http.HandlerFunc {
 }
 
 func validateUserToken(w http.ResponseWriter, r *http.Request, accessType int) (bool, int) {
-	isAccessTokenValid, id, name, userType := validateTokenFromCookies(r)
-	fmt.Print(id, name, userType, accessType, isAccessTokenValid)
+	isAccessTokenValid, id, name, username, email, userType := validateTokenFromCookies(r)
+	fmt.Print(id, name, username, email, userType, isAccessTokenValid)
 
 	if isAccessTokenValid {
 		isUserValid := userType >= accessType
@@ -81,7 +83,7 @@ func validateUserToken(w http.ResponseWriter, r *http.Request, accessType int) (
 }
 
 //Ambil dari cookies
-func validateTokenFromCookies(r *http.Request) (bool, int, string, int) {
+func validateTokenFromCookies(r *http.Request) (bool, int, string, string, string, int) {
 	if cookie, err := r.Cookie(tokenName); err == nil {
 		accessToken := cookie.Value
 		accessClaims := &model.Claims{}
@@ -89,10 +91,10 @@ func validateTokenFromCookies(r *http.Request) (bool, int, string, int) {
 			return jwtKey, nil
 		})
 		if err == nil && parsedToken.Valid {
-			return true, accessClaims.ID, accessClaims.Name, accessClaims.UserType
+			return true, accessClaims.ID, accessClaims.Name, accessClaims.Username, accessClaims.Email, accessClaims.UserType
 		}
 	}
-	return false, -1, "", -1
+	return false, -1, "", "", "", -1
 }
 
 func GetDataFromToken(token string) int {
